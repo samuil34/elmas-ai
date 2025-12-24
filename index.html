@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ev Bulma Oyunu</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+.screen {
+  display: none;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 30px;
+}
+.active { display: block; }
+h1 { font-size: 26px; margin-bottom: 20px; }
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px 10px;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+.card:active {
+  transform: scale(0.95);
+  background: #e0f7fa;
+}
+.full { grid-column: span 2; }
+.money-box { font-size: 28px; margin: 20px 0; }
+.money-box input {
+  width: 90px;
+  font-size: 32px;
+  text-align: center;
+  border-radius: 10px;
+  border: 2px solid #4CAF50;
+}
+.help { font-size: 18px; color: #555; }
+input[type="text"], input[type="tel"] {
+  width: 90%;
+  font-size: 22px;
+  padding: 15px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+button {
+  font-size: 22px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 20px;
+  background: #4CAF50;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<!-- Sorular -->
+<div class="screen active">
+  <h1>Ne istiyorsun?</h1>
+  <div class="options">
+    <div class="card" onclick="setType('Satılık')">🏠 Satın Al</div>
+    <div class="card" onclick="setType('Kiralık')">🔑 Kirala</div>
+  </div>
+</div>
+
+<div class="screen">
+  <h1 id="moneyTitle"></h1>
+  <div class="money-box">
+    <input type="number" id="moneyInput" min="1">
+    <span id="moneySuffix"></span>
+  </div>
+  <div class="help" id="moneyHelp"></div>
+  <button onclick="saveMoney()">Devam</button>
+</div>
+
+<div class="screen">
+  <h1>Nerede?</h1>
+  <div class="options">
+    <div class="card" onclick="setCity('İstanbul')">📍 İstanbul</div>
+    <div class="card" onclick="setCity('Ankara')">📍 Ankara</div>
+    <div class="card full" onclick="setCity('İzmir')">📍 İzmir</div>
+  </div>
+</div>
+
+<div class="screen">
+  <h1>Kaç oda?</h1>
+  <div class="options">
+    <div class="card" onclick="setRoom('1+1')">1+1</div>
+    <div class="card" onclick="setRoom('2+1')">2+1</div>
+    <div class="card" onclick="setRoom('3+1')">3+1</div>
+    <div class="card" onclick="setRoom('4+1+')">4+1+</div>
+  </div>
+</div>
+
+<div class="screen">
+  <h1>Kat?</h1>
+  <div class="options">
+    <div class="card" onclick="setFloor('Giriş')">⬇️ Giriş</div>
+    <div class="card" onclick="setFloor('Orta')">↔️ Orta</div>
+    <div class="card full" onclick="setFloor('Fark etmez')">❓ Fark etmez</div>
+  </div>
+</div>
+
+<div class="screen">
+  <h1>Seni tanıyalım 🙂</h1>
+  <input type="text" id="name" placeholder="Adın">
+  <input type="tel" id="tel" placeholder="Telefonun">
+  <button onclick="finish()">Gönder</button>
+</div>
+
+<!-- Hidden iframe ile form submit -->
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+<form id="gameForm" action="https://docs.google.com/forms/d/e/1FAIpQLSehNuzCi7WGMeQw_JXAK3sEPfnBEzgEIovx-C3EOYqUG1wQmw/formResponse" method="POST" target="hidden_iframe">
+  <input type="hidden" name="entry.104994271" id="formType">
+  <input type="hidden" name="entry.1954403053" id="formMoney">
+  <input type="hidden" name="entry.2112205297" id="formCity">
+  <input type="hidden" name="entry.268235315" id="formRoom">
+  <input type="hidden" name="entry.123456789" id="formFloor"> <!-- Kat -->
+  <input type="hidden" name="entry.985507002" id="formName">
+  <input type="hidden" name="entry.1004051599" id="formTel">
+</form>
+
+<script>
+let index = 0;
+const screens = document.querySelectorAll(".screen");
+let data = {};
+
+function setType(type) {
+  data.type = type;
+  document.getElementById("formType").value = type;
+
+  const suffix = document.getElementById("moneySuffix");
+  const help = document.getElementById("moneyHelp");
+  const title = document.getElementById("moneyTitle");
+
+  if (type === "Satılık") {
+    title.innerText = "En fazla kaç milyon?";
+    suffix.innerText = " milyon TL";
+    help.innerText = "Örnek: 5 → 5 milyon";
+  } else {
+    title.innerText = "En fazla kaç bin?";
+    suffix.innerText = " bin TL";
+    help.innerText = "Örnek: 8 → 8 bin";
+  }
+  next();
+}
+
+function saveMoney() {
+  const val = document.getElementById("moneyInput").value;
+  data.money = val + (data.type === "Satılık" ? " milyon" : " bin");
+  document.getElementById("formMoney").value = data.money;
+  next();
+}
+
+function setCity(city) {
+  data.city = city;
+  document.getElementById("formCity").value = city;
+  next();
+}
+
+function setRoom(room) {
+  data.room = room;
+  document.getElementById("formRoom").value = room;
+  next();
+}
+
+function setFloor(floor) {
+  data.floor = floor;
+  document.getElementById("formFloor").value = floor;
+  next();
+}
+
+function next() {
+  screens[index].classList.remove("active");
+  index++;
+  if (index < screens.length) screens[index].classList.add("active");
+}
+
+function finish() {
+  data.name = document.getElementById("name").value;
+  data.tel = document.getElementById("tel").value;
+
+  document.getElementById("formName").value = data.name;
+  document.getElementById("formTel").value = data.tel;
+
+  document.getElementById("gameForm").submit();
+  alert("Talebin alındı 👍");
+}
+</script>
+
+</body>
+</html>
