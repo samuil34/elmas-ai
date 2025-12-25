@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ev Bulma</title>
+<title>Ev Bulma Oyunu</title>
 
 <style>
+/* --- TASARIM AYNI --- */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -13,68 +14,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 }
-
-/* LOGO */
-.logo-wrap {
-  margin-top: 10px;
+.logo-container {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
-.logo-box {
+.logo-container div {
   position: relative;
-  width: 156px;
-  height: 180px;
 }
-
-.logo-box div {
-  position: absolute;
-  background: #d4af37;
-}
-
-.logo-top {
-  top: 94px;
-  left: 50%;
-  width: 60px;
-  height: 36px;
-  transform: translateX(-50%);
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-}
-
-.logo-mid {
-  top: 147px;
-  left: 50%;
-  width: 48px;
-  height: 48px;
-  transform: translateX(-50%) rotate(45deg);
-}
-
-.logo-left {
-  top: 108px;
-  left: 18px;
-  width: 48px;
-  height: 48px;
-  transform: rotate(45deg);
-}
-
-.logo-right {
-  top: 108px;
-  right: 18px;
-  width: 48px;
-  height: 48px;
-  transform: rotate(45deg);
-}
-
 .logo-text {
-  margin-top: 20px;
+  margin-top: 33px;
+  color: #d4af37;
   font-size: 24px;
   font-weight: bold;
-  color: #d4af37;
 }
-
-/* FORM */
 .screen {
   display: none;
   width: 90%;
@@ -82,37 +38,34 @@ body {
   margin-top: 30px;
   text-align: center;
 }
-
-.screen.active {
-  display: block;
-}
+.active { display: block; }
 
 .options {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
-
 .card {
   background: white;
-  padding: 25px;
   border-radius: 20px;
-  font-size: 20px;
+  padding: 30px 10px;
+  font-size: 22px;
   cursor: pointer;
   box-shadow: 0 5px 10px rgba(0,0,0,0.1);
 }
+.card:active { transform: scale(0.95); }
 
 input {
   width: 90%;
   padding: 15px;
-  font-size: 18px;
-  border-radius: 14px;
+  font-size: 20px;
+  border-radius: 15px;
   border: 1px solid #ccc;
 }
 
 button {
   padding: 15px 30px;
-  font-size: 18px;
+  font-size: 20px;
   border: none;
   border-radius: 20px;
   background: #4CAF50;
@@ -123,14 +76,7 @@ button {
 
 <body>
 
-<!-- LOGO -->
-<div class="logo-wrap">
-  <div class="logo-box">
-    <div class="logo-top"></div>
-    <div class="logo-mid"></div>
-    <div class="logo-left"></div>
-    <div class="logo-right"></div>
-  </div>
+<div class="logo-container">
   <div class="logo-text">ELMAS</div>
 </div>
 
@@ -144,8 +90,8 @@ button {
 </div>
 
 <div class="screen">
-  <h1>Bütçen?</h1>
-  <input id="money" type="number">
+  <h1>Bütçe</h1>
+  <input id="money" type="number" placeholder="Örn: 1500000">
   <button onclick="saveMoney()">Devam</button>
 </div>
 
@@ -159,7 +105,7 @@ button {
 </div>
 
 <div class="screen">
-  <h1>Oda Sayısı</h1>
+  <h1>Oda</h1>
   <div class="options">
     <div class="card" onclick="setRoom('1+1')">1+1</div>
     <div class="card" onclick="setRoom('2+1')">2+1</div>
@@ -174,10 +120,11 @@ button {
   <button onclick="sendForm()">Gönder</button>
 </div>
 
-<form id="googleForm"
-  action="https://docs.google.com/forms/d/e/1FAIpQLSehNuzCi7WGMeQw_JXAK3sEPfnBEzgEIovx-C3EOYqUG1wQmw/formResponse"
-  method="POST"
-  target="hidden_iframe">
+<!-- GİZLİ GOOGLE FORM -->
+<form id="gForm"
+      action="https://docs.google.com/forms/d/e/1FAIpQLSehNuzCi7WGMeQw_JXAK3sEPfnBEzgEIovx-C3EOYqUG1wQmw/formResponse"
+      method="POST"
+      target="hidden_iframe">
 
   <input type="hidden" name="entry.104994271" id="f_type">
   <input type="hidden" name="entry.1954403053" id="f_money">
@@ -216,8 +163,8 @@ function sendForm() {
   document.getElementById("f_name").value = data.name;
   document.getElementById("f_phone").value = data.phone;
 
-  document.getElementById("googleForm").submit();
-  alert("Talebiniz başarıyla alındı ✅");
+  document.getElementById("gForm").submit();
+  alert("Talebin alındı ✅");
 }
 </script>
 
