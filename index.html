@@ -3,21 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ev Türü Seçimi</title>
-<style>
-  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
-  select, button { padding: 10px; margin: 10px; font-size: 16px; border-radius: 5px; }
-  button { background: #2196F3; color: white; border: none; cursor: pointer; }
-</style>
+<title>Deneme Formu</title>
 </head>
 <body>
 
-<h1>Ev Türünü Seç</h1>
+<h1>Ev Türü Seçimi (Deneme)</h1>
 
 <select id="type">
   <option value="">Seçiniz</option>
-  <option value="Satılık">🏠 Satılık</option>
-  <option value="Kiralık">🔑 Kiralık</option>
+  <option value="Satılık">Satılık</option>
+  <option value="Kiralık">Kiralık</option>
 </select>
 
 <button onclick="submitType()">Gönder</button>
@@ -25,25 +20,19 @@
 <script>
 function submitType() {
   const type = document.getElementById("type").value;
+  if(!type){ alert("Ev türünü seçin!"); return; }
 
-  if (!type) {
-    alert("Lütfen bir ev türü seçin!");
-    return;
-  }
-
-  // Google Form formResponse linki
+  // Senin verdiğin Google Form formResponse linki
   const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSc8ZL1BaPodwanhWRj0sOsJFRFfTLQvlut-VM2TVCXkD8o7Gg/formResponse";
 
   const fd = new FormData();
-  fd.append("entry.1383727072", type); // Ev Türü entry ID → tarayıcıdan kontrol et
+  fd.append("entry.1383727072", type); // Senin verdiğin entry kodu
 
-  fetch(formURL, { method: "POST", mode: "no-cors", body: fd });
+  fetch(formURL, { method:"POST", mode:"no-cors", body: fd });
 
-  alert("Seçimin alındı: " + type);
+  alert("Seçimin gönderildi: " + type);
 }
 </script>
 
 </body>
 </html>
-
-
