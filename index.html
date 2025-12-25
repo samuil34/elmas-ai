@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ev Bulma</title>
+<title>Ev Bulma Oyunu</title>
 
 <style>
+/* --- TASARIM AYNI --- */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -13,15 +14,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 }
-
-.logo {
+.logo-container {
   margin-top: 20px;
-  font-size: 26px;
-  font-weight: bold;
-  color: #d4af37;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
+.logo-container div {
+  position: relative;
+}
+.logo-text {
+  margin-top: 33px;
+  color: #d4af37;
+  font-size: 24px;
+  font-weight: bold;
+}
 .screen {
   display: none;
   width: 90%;
@@ -29,38 +38,34 @@ body {
   margin-top: 30px;
   text-align: center;
 }
-
-.screen.active {
-  display: block;
-}
+.active { display: block; }
 
 .options {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 20px;
 }
-
 .card {
   background: white;
-  padding: 20px;
-  border-radius: 16px;
-  font-size: 20px;
+  border-radius: 20px;
+  padding: 30px 10px;
+  font-size: 22px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
 }
+.card:active { transform: scale(0.95); }
 
 input {
   width: 90%;
-  padding: 14px;
-  font-size: 18px;
-  border-radius: 14px;
+  padding: 15px;
+  font-size: 20px;
+  border-radius: 15px;
   border: 1px solid #ccc;
 }
 
 button {
-  margin-top: 20px;
-  padding: 14px 25px;
-  font-size: 18px;
+  padding: 15px 30px;
+  font-size: 20px;
   border: none;
   border-radius: 20px;
   background: #4CAF50;
@@ -71,27 +76,27 @@ button {
 
 <body>
 
-<div class="logo">ELMAS</div>
+<div class="logo-container">
+  <div class="logo-text">ELMAS</div>
+</div>
 
-<!-- 1 -->
+<!-- SCREENS -->
 <div class="screen active">
-  <h2>Ne arıyorsun?</h2>
+  <h1>Ne istiyorsun?</h1>
   <div class="options">
     <div class="card" onclick="setType('Satılık')">🏠 Satılık</div>
     <div class="card" onclick="setType('Kiralık')">🔑 Kiralık</div>
   </div>
 </div>
 
-<!-- 2 -->
 <div class="screen">
-  <h2>Bütçen?</h2>
-  <input id="budget" type="number" placeholder="Örn: 1500000">
-  <button onclick="saveBudget()">Devam</button>
+  <h1>Bütçe</h1>
+  <input id="money" type="number" placeholder="Örn: 1500000">
+  <button onclick="saveMoney()">Devam</button>
 </div>
 
-<!-- 3 -->
 <div class="screen">
-  <h2>Şehir</h2>
+  <h1>Şehir</h1>
   <div class="options">
     <div class="card" onclick="setCity('İstanbul')">İstanbul</div>
     <div class="card" onclick="setCity('Ankara')">Ankara</div>
@@ -99,9 +104,8 @@ button {
   </div>
 </div>
 
-<!-- 4 -->
 <div class="screen">
-  <h2>Oda Sayısı</h2>
+  <h1>Oda</h1>
   <div class="options">
     <div class="card" onclick="setRoom('1+1')">1+1</div>
     <div class="card" onclick="setRoom('2+1')">2+1</div>
@@ -109,26 +113,25 @@ button {
   </div>
 </div>
 
-<!-- 5 -->
 <div class="screen">
-  <h2>İletişim</h2>
+  <h1>İletişim</h1>
   <input id="name" placeholder="Ad Soyad">
   <input id="phone" placeholder="Telefon">
-  <button onclick="submitForm()">Gönder</button>
+  <button onclick="sendForm()">Gönder</button>
 </div>
 
-<!-- GİZLİ FORM -->
-<form id="googleForm"
-      action="https://docs.google.com/forms/d/e/1FAIpQLSc8ZL1BaPodwanhWRj0sOsJFRFfTLQvlut-VM2TVCXkD8o7Gg/formResponse"
+<!-- GİZLİ GOOGLE FORM -->
+<form id="gForm"
+      action="https://docs.google.com/forms/d/e/1FAIpQLSehNuzCi7WGMeQw_JXAK3sEPfnBEzgEIovx-C3EOYqUG1wQmw/formResponse"
       method="POST"
       target="hidden_iframe">
 
-  <input type="hidden" name="entry.1383727072" id="f_type">
-  <input type="hidden" name="entry.1429357412" id="f_budget">
-  <input type="hidden" name="entry.492503015" id="f_city">
-  <input type="hidden" name="entry.751111491" id="f_room">
-  <input type="hidden" name="entry.567089153" id="f_name">
-  <input type="hidden" name="entry.37570419" id="f_phone">
+  <input type="hidden" name="entry.104994271" id="f_type">
+  <input type="hidden" name="entry.1954403053" id="f_money">
+  <input type="hidden" name="entry.2112205297" id="f_city">
+  <input type="hidden" name="entry.268235315" id="f_room">
+  <input type="hidden" name="entry.985507002" id="f_name">
+  <input type="hidden" name="entry.1004051599" id="f_phone">
 </form>
 
 <iframe name="hidden_iframe" style="display:none;"></iframe>
@@ -145,24 +148,23 @@ function next() {
 }
 
 function setType(v){ data.type = v; next(); }
-function saveBudget(){ data.budget = document.getElementById("budget").value; next(); }
+function saveMoney(){ data.money = document.getElementById("money").value; next(); }
 function setCity(v){ data.city = v; next(); }
 function setRoom(v){ data.room = v; next(); }
 
-function submitForm(){
+function sendForm() {
   data.name = document.getElementById("name").value;
   data.phone = document.getElementById("phone").value;
 
   document.getElementById("f_type").value = data.type;
-  document.getElementById("f_budget").value = data.budget;
+  document.getElementById("f_money").value = data.money;
   document.getElementById("f_city").value = data.city;
   document.getElementById("f_room").value = data.room;
   document.getElementById("f_name").value = data.name;
   document.getElementById("f_phone").value = data.phone;
 
-  document.getElementById("googleForm").submit();
-
-  alert("Talebiniz başarıyla alındı ✔️");
+  document.getElementById("gForm").submit();
+  alert("Talebin alındı ✅");
 }
 </script>
 
