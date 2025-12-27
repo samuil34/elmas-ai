@@ -74,13 +74,21 @@ h1 { font-size: 26px; margin-bottom: 20px; }
   border-radius: 10px;
   border: 2px solid #4CAF50;
 }
+.money-box select {
+  font-size: 22px;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border-radius: 10px;
+}
 
+/* Diğer inputlar */
 input[type="text"], input[type="tel"] {
   width: 90%;
   font-size: 22px;
   padding: 15px;
   border-radius: 15px;
   border: 1px solid #ccc;
+  margin-bottom: 15px;
 }
 
 button {
@@ -90,6 +98,23 @@ button {
   border-radius: 20px;
   background: #4CAF50;
   color: white;
+  cursor: pointer;
+}
+
+/* TİK MESAJI */
+#confirmation {
+  display: none;
+  margin-top: 40px;
+  text-align: center;
+}
+#confirmation .tick {
+  font-size: 80px;
+  color: #4CAF50;
+}
+#confirmation p {
+  margin-top: 20px;
+  font-size: 22px;
+  color: #333;
 }
 </style>
 </head>
@@ -103,7 +128,7 @@ button {
     <div style="position:absolute; top:108px; left:18px; width:48px; height:48px; background:#d4af37; transform:rotate(45deg);"></div>
     <div style="position:absolute; top:108px; right:18px; width:48px; height:48px; background:#d4af37; transform:rotate(45deg);"></div>
   </div>
-  <div class="logo-text">ELMAS</div>
+  <div class="logo-text">ELMAS A.I</div>
 </div>
 
 <!-- SORULAR -->
@@ -112,26 +137,32 @@ button {
   <div class="options">
     <div class="card" onclick="setType('Satılık Bul')">🏠🔍 Satılık Bul</div>
     <div class="card" onclick="setType('Kiralık Bul')">🔑🏠 Kiralık Bul</div>
-    <div class="card" onclick="setType('Evimi Sat')">🏡📣 Evimi Sat</div>
+    <div class="card" onclick="setType('Evimi Sat')">🏡📣 Evimi Sat<br>
+      <span style="display:block; font-size:13px; color:#999999; margin-top:4px;">
+        (arsa, dükkân, ofis...)
+      </span>
+    </div>
     <div class="card" onclick="setType('Kiraya ver')">🔑🏷️ Kiraya Ver</div>
   </div>
 </div>
 
 <div class="screen">
-  <h1 id="moneyTitle"></h1>
-  <div class="money-box">
-    <input type="number" id="moneyInput">
-    <span id="moneySuffix"></span>
-  </div>
-  <button onclick="saveMoney()">Devam</button>
+  <h1>Nerede?</h1>
+  <input type="text" id="city" placeholder="Şehir giriniz">
+  <small>Örn: İstanbul, Ankara, İzmir</small><br><br>
+  <button onclick="saveCity()">Devam</button>
 </div>
 
 <div class="screen">
-  <h1>Nerede?</h1>
-  <div class="options">
-    <div class="card" onclick="setCity('İstanbul')">📍 Gaziantep </div>
-
+  <h1 id="moneyTitle"></h1>
+  <div class="money-box">
+    <input type="number" id="moneyInput" min="0" placeholder="0">
+    <select id="moneyUnit">
+      <option value="bin">Bin TL</option>
+      <option value="milyon">Milyon TL</option>
+    </select>
   </div>
+  <button onclick="saveMoney()">Devam</button>
 </div>
 
 <div class="screen">
@@ -142,7 +173,10 @@ button {
     <div class="card" onclick="setRoom('2+1')">2+1</div>
     <div class="card" onclick="setRoom('3+1')">3+1</div>
     <div class="card" onclick="setRoom('4+1')">4+1</div>
-    <div class="card" onclick="setRoom('Dubleks/Villa')">Dubleks/Villa</div>
+    <div class="card" onclick="setRoom('diğer(arsa, dükkân, ofis, dubleks, villa...)')">Diğer<br>
+      <span style="display:block; font-size:13px; color:#999999; margin-top:4px;">
+        (arsa, dükkân, ofis, dubleks, villa...)
+      </span></div>
   </div>
 </div>
 
@@ -153,6 +187,35 @@ button {
   <button onclick="finish()">Gönder</button>
 </div>
 
+<!-- ŞIK TİK MESAJI baş -->
+<!-- ONAY / TİK MESAJI -->
+<div id="confirmation" style="display:none; text-align:center; margin-top:30px;">
+  <svg width="80" height="80" viewBox="0 0 100 100">
+    <!-- Daire -->
+    <circle cx="50" cy="50" r="42" stroke="#4CAF50" stroke-width="4" fill="none"/>
+    <!-- Tik -->
+    <polyline points="30,55 45,70 70,35" stroke="#4CAF50" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <p style="
+    font-size:18px;
+    color:#333;
+    margin-top:10px;
+    max-width:300px;
+    line-height:1.4;
+  ">
+    Talebiniz başarıyla alındı!<br>En kısa sürede sizinle iletişime geçeceğiz 😊
+  </p>
+</div>
+
+<script>
+function showConfirmation() {
+  document.getElementById("confirmation").style.display = "block";
+}
+</script>
+
+
+<!-- ŞIK TİK MESAJI son -->
+
 <script>
 let index = 0;
 let data = {};
@@ -161,24 +224,38 @@ const screens = document.querySelectorAll(".screen");
 function next() {
   screens[index].classList.remove("active");
   index++;
-  screens[index].classList.add("active");
+  if(index < screens.length){
+    screens[index].classList.add("active");
+  }
 }
 
 function setType(type) {
   data.type = type;
-  document.getElementById("moneyTitle").innerText =
-    type === "Satılık" ? "En fazla kaç milyon?" : "En fazla kaç bin?";
-  document.getElementById("moneySuffix").innerText =
-    type === "Satılık" ? " milyon" : " bin";
+  if(type === "Satılık Bul" || type === "Evimi Sat") {
+    document.getElementById("moneyTitle").innerText = "Fiyat ne kadar?";
+  } else {
+    document.getElementById("moneyTitle").innerText = "Aylık kira ne kadar?";
+  }
   next();
 }
 
 function saveMoney() {
-  data.money = document.getElementById("moneyInput").value;
+  const input = document.getElementById("moneyInput").value;
+  const unit = document.getElementById("moneyUnit").value;
+  if(!input || input <= 0){
+    alert("Lütfen geçerli bir fiyat giriniz!");
+    return;
+  }
+  data.money = input + " " + unit;
   next();
 }
 
-function setCity(city) {
+function saveCity() {
+  const city = document.getElementById("city").value.trim();
+  if(!city) {
+    alert("Lütfen bir şehir giriniz!");
+    return;
+  }
   data.city = city;
   next();
 }
@@ -189,8 +266,18 @@ function setRoom(room) {
 }
 
 function finish() {
-  data.name = document.getElementById("name").value;
-  data.tel = document.getElementById("tel").value;
+  data.name = document.getElementById("name").value.trim();
+  data.tel = document.getElementById("tel").value.trim();
+
+  // Kontroller
+  if(!data.name){
+    alert("Lütfen adınızı giriniz!");
+    return;
+  }
+  if(!data.tel){
+    alert("Lütfen telefonunuzu giriniz!");
+    return;
+  }
 
   const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSc8ZL1BaPodwanhWRj0sOsJFRFfTLQvlut-VM2TVCXkD8o7Gg/formResponse";
 
@@ -204,12 +291,14 @@ function finish() {
 
   fetch(formURL, { method: "POST", mode: "no-cors", body: fd });
 
-  alert("Talebin alındı 👍");
+  // Tüm ekranları gizle
+  screens.forEach(s => s.classList.remove("active"));
+
+  // Onay mesajını göster
+  document.getElementById("confirmation").style.display = "block";
 }
+
 </script>
 
 </body>
 </html>
-
-
-
