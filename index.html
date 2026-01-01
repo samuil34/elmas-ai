@@ -324,11 +324,26 @@ function finish() {
 function openKvkk(e) {
   e.preventDefault();
   document.getElementById("kvkkModal").style.display = "block";
+    // Tarayıcı geçmişine sahte adım ekle
+  history.pushState({ kvkk: true }, "", "#kvkk");
 }
 
 function closeKvkk() {
   document.getElementById("kvkkModal").style.display = "none";
+    // Geri tuşu geçmişini temizle
+  if (location.hash === "#kvkk") {
+    history.back();
+  }
 }
+
+
+window.addEventListener("popstate", function () {
+  const kvkk = document.getElementById("kvkkModal");
+
+  if (kvkk && kvkk.style.display === "block") {
+    kvkk.style.display = "none";
+  }
+});
 
 
 
