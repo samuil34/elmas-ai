@@ -184,18 +184,6 @@ button {
   <h1>Sizi tanıyalım 🙂</h1>
   <input type="text" id="name" placeholder="Adın">
   <input type="tel" id="tel" placeholder="Telefonun">
-  <!-- KVKK BAŞ -->
-  <div style="margin:10px 0; font-size:14px; text-align:left;">
-  <label style="cursor:pointer;">
-    <input type="checkbox" id="kvkkCheck" style="margin-right:6px;">
-    <a href="kvkk.html" target="_blank" style="color:#1a73e8; text-decoration:underline;">
-      KVKK Aydınlatma Metni
-    </a>
-    ’ni okudum ve kabul ediyorum.
-   </label>
-   </div>
-<!-- KVKK SON -->
-
   <button onclick="finish()">Gönder</button>
 </div>
 
@@ -292,11 +280,6 @@ function finish() {
     alert("Lütfen telefonunuzu giriniz!");
     return;
   }
-    const kvkk = document.getElementById("kvkkCheck");
-  if(!kvkk.checked){
-    alert("Lütfen KVKK Aydınlatma Metni'ni onaylayınız.");
-    return;
-  }
 
   const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSc8ZL1BaPodwanhWRj0sOsJFRFfTLQvlut-VM2TVCXkD8o7Gg/formResponse";
 
@@ -321,7 +304,6 @@ function finish() {
 
 </body>
 </html>
-
 
 
 
